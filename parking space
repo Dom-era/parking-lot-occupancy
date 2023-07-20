@@ -1,0 +1,52 @@
+import cv2
+
+def detect_parking_spaces(image_path):
+    # Load the image
+    image = cv2.imread(image_path)
+
+    # Convert the image to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Apply a threshold to create a binary image
+    _, binary = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
+
+    # Find contours of the parking spaces
+    contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # Iterate through the contours
+    for contour in contours:
+        # Compute the area of the contour
+        area = cv2.contourArea(contour)
+
+        # Get the bounding rectangle coordinates
+        x, y, w, h = cv2.boundingRect(contour)
+
+        # Threshold to differentiate between occupied and unoccupied spaces
+        if area > 1000:  # Adjust the threshold as per your requirement
+            # Draw a rectangle around the occupied space on the original image (in red color)
+            cv2.rectangle(image, (x, y), (x+w, y+h), (0, 0, 255), 2)
+            cv2.putText(image, "Occupied", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+   
+    # Display the original image with marked parking spaces
+    cv2.imshow("Parking Spaces", image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+# Path to the image containing the parking lot
+image_path = "C:/Users/Domera.MARION/Desktop/compv/lot.PNG"
+
+# Detect parking spaces in the image
+detect_parking_spaces(image_path)
+
+
+# Detect parking spaces in the image
+detect_parking_spaces(image_path)
+
+
+# Detect parking spaces in the image
+occupied_spaces, empty_spaces = detect_parking_spaces(image_path)
+
+# Print the coordinates of occupied parking spaces
+print("Occupied Parking Spaces:")
+for i, space in enumerate(occupied_spaces):
+    print(f"Occupied Space {i+1}: {space}")
